@@ -117,7 +117,16 @@ def print_ruta(ruta):
 
 def option_four(cont):
     # TODO: Imprimir los resultados de la opción 4
-    ...
+    stop1 = input("Parada inicial (ej. 66009-100): ")
+    stop2 = input("Parada destino (ej. 14151-10): ")
+    ruta = logic.get_route_between_stops_bfs(cont, stop1, stop2)
+    print("\n----- OPCIÓN 4 (BFS) ----")
+    print("Parada inicial: '" + stop1 + "'")
+    print("Parada destino: '" + stop2 + "'")
+    if ruta is None:
+        print("No existe una ruta entre las dos paradas")
+    else:
+        print_ruta(ruta)
 
 def option_five(cont):
     # TODO: Imprimir los resultados de la opción 5

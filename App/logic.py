@@ -32,6 +32,7 @@ from DataStructures.List import single_linked_list as lt
 from DataStructures.Map import map_linear_probing as m
 from DataStructures.Graph import digraph as G
 from DataStructures.Graph import dfs as dfs
+from DataStructures.Graph import bfs as bfs
 from DataStructures.List import array_list as al
 from DataStructures.Stack import stack as st
 
@@ -293,7 +294,17 @@ def get_route_between_stops_bfs(analyzer, stop1, stop2):
     Obtener la ruta entre dos parada usando bfs
     """
     # TODO: Obtener la ruta entre dos parada usando bfs
-    ...
+    grafo = analyzer['connections']
+    if not G.contains_vertex(grafo, stop1) or not G.contains_vertex(grafo, stop2):
+        return None
+    visitados = bfs.bfs(grafo, stop1)
+    camino = bfs.path_to(stop2, visitados)
+    if camino is None:
+        return None
+    ruta = al.new_list()
+    while not st.is_empty(camino):
+        al.add_last(ruta, st.pop(camino))
+    return ruta
 
 def get_shortest_route_between_stops(analyzer, stop1, stop2):
     """

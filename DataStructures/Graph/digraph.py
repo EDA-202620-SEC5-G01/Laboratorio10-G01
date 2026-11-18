@@ -14,7 +14,7 @@ def insert_vertex(my_graph, key_u, info_u):
     return my_graph
  
  
-def add_edge(my_graph, key_u, key_v, weight=0):
+def add_edge(my_graph, key_u, key_v, weight=1.0):
     vertex_u = mp.get(my_graph["vertices"], key_u)
     if vertex_u is None:
         raise Exception("El vertice u no existe")
@@ -40,16 +40,16 @@ def size(my_graph):
  
 def degree(my_graph, key_u):
     vertex = mp.get(my_graph["vertices"], key_u)
-    if vertex is not None:
-        return vr.degree(vertex)
-    return 0
+    if vertex is None:
+        raise Exception("El vertice no existe")
+    return vr.degree(vertex)
  
  
 def adjacents(my_graph, key_u):
     vertex = mp.get(my_graph["vertices"], key_u)
-    if vertex is not None:
-        return vr.get_adjacents(vertex)
-    return None
+    if vertex is None:
+        raise Exception("El vertice no existe")
+    return mp.key_set(vr.get_adjacents(vertex))
  
  
 def vertices(my_graph):
@@ -67,15 +67,15 @@ def get_vertex(my_graph, key_u):
     return mp.get(my_graph["vertices"], key_u)
  
  
-def update_vertex_info(my_graph, key_u, info_u):
+def update_vertex_info(my_graph, key_u, new_info_u):
     vertex = mp.get(my_graph["vertices"], key_u)
     if vertex is not None:
-        vr.set_value(vertex, info_u)
+        vr.set_value(vertex, new_info_u)
     return my_graph
  
  
 def get_vertex_information(my_graph, key_u):
     vertex = mp.get(my_graph["vertices"], key_u)
-    if vertex is not None:
-        return vr.get_value(vertex)
-    return None
+    if vertex is None:
+        raise Exception("El vertice no existe")
+    return vr.get_value(vertex)

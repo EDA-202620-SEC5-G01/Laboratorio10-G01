@@ -13,9 +13,8 @@ def dfs(my_graph, source):
 
 def dfs_vertex(my_graph, vertex, visited_map):
     adyacentes = G.adjacents(my_graph, vertex)
-    llaves = mp.key_set(adyacentes)
-    for i in range(al.size(llaves)):
-        w = al.get_element(llaves, i)
+    for i in range(al.size(adyacentes)):
+        w = al.get_element(adyacentes, i)
         if not mp.contains(visited_map, w):
             mp.put(visited_map, w, {"marked": True, "edge_from": vertex})
             dfs_vertex(my_graph, w, visited_map)
