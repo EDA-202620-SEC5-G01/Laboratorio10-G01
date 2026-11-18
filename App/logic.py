@@ -31,6 +31,9 @@
 from DataStructures.List import single_linked_list as lt
 from DataStructures.Map import map_linear_probing as m
 from DataStructures.Graph import digraph as G
+from DataStructures.Graph import dfs as dfs
+from DataStructures.List import array_list as al
+from DataStructures.Stack import stack as st
 
 import csv
 import time
@@ -137,6 +140,7 @@ def total_stops(analyzer):
     Total de paradas de autobus en el grafo
     """
     # TODO: Retorne el número de vértices del grafo
+    return G.order(analyzer['connections'])
 
 
 def total_connections(analyzer):
@@ -144,6 +148,7 @@ def total_connections(analyzer):
     Total de enlaces entre las paradas
     """
     # TODO: Retorne el número de arcos del grafo de conexiones
+    return G.size(analyzer['connections'])
 
 
 # Funciones para la medición de tiempos
@@ -252,14 +257,36 @@ def get_most_concurrent_stops(analyzer):
     Obtiene las 5 paradas más concurridas
     """
     # TODO: Obtener las 5 paradas más concurridas, es decir, con más arcos salientes
-    ...
+    paradas = al.new_list()
+    vertices = G.vertices(analyzer['connections'])
+    for i in range(al.size(vertices)):
+        parada = al.get_element(vertices, i)
+        grado = G.degree(analyzer['connections'], parada)
+        al.add_last(paradas, {'parada': parada, 'grado': grado})
+    al.merge_sort(paradas, comparar_grado)
+    num = 5
+    if al.size(paradas) < 5:
+        num = al.size(paradas)
+    if num == 0:
+        return paradas
+    return al.sub_list(paradas, 0, num)
 
 def get_route_between_stops_dfs(analyzer, stop1, stop2):
     """
     Obtener la ruta entre dos parada usando dfs
     """
     # TODO: Obtener la ruta entre dos parada usando dfs
-    ...
+    grafo = analyzer['connections']
+    if not G.contains_vertex(grafo, stop1) or not G.contains_vertex(grafo, stop2):
+        return None
+    visitados = dfs.dfs(grafo, stop1)
+    camino = dfs.path_to(stop2, visitados)
+    if camino is None:
+        return None
+    ruta = al.new_list()
+    while not st.is_empty(camino):
+        al.add_last(ruta, st.pop(camino))
+    return ruta
 
 def get_route_between_stops_bfs(analyzer, stop1, stop2):
     """
@@ -287,6 +314,12 @@ def show_calculated_shortest_route(analyzer, destination_stop):
 # ___________________________________________________
 # Funciones Helper
 # ___________________________________________________
+
+def comparar_grado(parada_1, parada_2):
+    if parada_1['grado'] > parada_2['grado']:
+        return True
+    return False
+
 
 def clean_service_distance(lastservice, service):
     """

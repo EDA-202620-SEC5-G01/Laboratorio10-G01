@@ -16,9 +16,13 @@ def insert_vertex(my_graph, key_u, info_u):
  
 def add_edge(my_graph, key_u, key_v, weight=0):
     vertex_u = mp.get(my_graph["vertices"], key_u)
-    if vertex_u is not None:
-        vr.add_adjacent(vertex_u, key_v, weight)
+    if vertex_u is None:
+        raise Exception("El vertice u no existe")
+    if mp.get(my_graph["vertices"], key_v) is None:
+        raise Exception("El vertice v no existe")
+    if vr.get_edge(vertex_u, key_v) is None:
         my_graph["num_edges"] += 1
+    vr.add_adjacent(vertex_u, key_v, weight)
     return my_graph
  
  
@@ -74,4 +78,4 @@ def get_vertex_information(my_graph, key_u):
     vertex = mp.get(my_graph["vertices"], key_u)
     if vertex is not None:
         return vr.get_value(vertex)
-    return None
+    return None

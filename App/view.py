@@ -28,6 +28,7 @@
 import sys
 import threading
 from App import logic
+from DataStructures.List import array_list as al
 
 """
 La vista se encarga de la interacción con el usuario.
@@ -75,11 +76,44 @@ def option_one(cont):
 
 def option_two(cont):
     # TODO: Imprimir los resultados de la opción 2
-    ...
+    paradas = logic.get_most_concurrent_stops(cont)
+    print("\n------ OPCIÓN 2 ------")
+    print("Las paradas más concurridas son:")
+    for i in range(al.size(paradas)):
+        parada = al.get_element(paradas, i)
+        print(str(i + 1) + ". '" + parada['parada'] + "': " + str(parada['grado']) + " conexiones")
 
 def option_three(cont):
     # TODO: Imprimir los resultados de la opción 3
-    ...
+    stop1 = input("Parada inicial (ej. 66009-100): ")
+    stop2 = input("Parada destino (ej. 14151-10): ")
+    ruta = logic.get_route_between_stops_dfs(cont, stop1, stop2)
+    print("\n----- OPCIÓN 3 (DFS) ----")
+    print("Parada inicial: '" + stop1 + "'")
+    print("Parada destino: '" + stop2 + "'")
+    if ruta is None:
+        print("No existe una ruta entre las dos paradas")
+    else:
+        print_ruta(ruta)
+
+
+def print_ruta(ruta):
+    primera = al.get_element(ruta, 0)
+    bus = primera.split('-')[1]
+    print("\n--- Tomar bus '" + bus + "' desde '" + primera + "' ---")
+    linea = primera.split('-')[0]
+    for i in range(1, al.size(ruta)):
+        vertice = al.get_element(ruta, i)
+        parada = vertice.split('-')[0]
+        nuevo_bus = vertice.split('-')[1]
+        if nuevo_bus != bus:
+            print(linea + " ->")
+            print("--- Cambiar a bus '" + nuevo_bus + "' en la parada '" + parada + "' ---")
+            bus = nuevo_bus
+            linea = parada
+        else:
+            linea = linea + " -> " + parada
+    print(linea)
 
 def option_four(cont):
     # TODO: Imprimir los resultados de la opción 4

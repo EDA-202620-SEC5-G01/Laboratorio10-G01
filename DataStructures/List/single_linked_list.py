@@ -265,3 +265,11 @@ def quick_sort(my_list,sort_crit):
         
     return my_list
     
+
+
+def default_function(element_1, element_2):
+    if element_1 == element_2:
+        return 0
+    elif element_1 > element_2:
+        return 1
+    return -1
