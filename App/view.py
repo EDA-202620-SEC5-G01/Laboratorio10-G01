@@ -42,8 +42,8 @@ operación seleccionada.
 # ___________________________________________________
 
 
-servicefile = 'bus_routes_14000.csv'
-stopsfile = 'bus_stops.csv'
+servicefile = 'singapur_bus_routes/bus_routes_14000.csv'
+stopsfile = 'singapur_bus_routes/bus_stops.csv'
 initialStation = None
 
 # ___________________________________________________
@@ -130,11 +130,28 @@ def option_four(cont):
 
 def option_five(cont):
     # TODO: Imprimir los resultados de la opción 5
-    ...
+    stop1 = input("Parada inicial (ej. 66009-100): ")
+    stop2 = input("Parada destino (ej. 14151-10): ")
+    respuesta = logic.get_shortest_route_between_stops(cont, stop1, stop2)
+    print("\n----- OPCIÓN 5 ----")
+    print("Origen: '" + stop1 + "'")
+    print("Destino: '" + stop2 + "'")
+    if respuesta is None:
+        print("No existe una ruta entre las dos paradas")
+    else:
+        print_ruta(respuesta['ruta'])
+        print("Distancia total: " + str(round(respuesta['distancia'], 2)) + " km")
 
 def option_six(cont):
     # (Opcional) TODO: Imprimir los resultados de la opción 6
-    ...
+    destino = input("Parada destino (ej. 14151-10): ")
+    archivo = logic.show_calculated_shortest_route(cont, destino)
+    print("\n----- OPCIÓN 6 ----")
+    if archivo is None:
+        print("Primero ejecute la opción 5, o no existe una ruta hasta esa parada")
+    else:
+        print("El mapa se guardó en el archivo: " + archivo)
+        print("Ábralo con el navegador para ver la ruta")
 
 
 """

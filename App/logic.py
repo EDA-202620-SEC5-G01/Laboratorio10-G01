@@ -33,10 +33,12 @@ from DataStructures.Map import map_linear_probing as m
 from DataStructures.Graph import digraph as G
 from DataStructures.Graph import dfs as dfs
 from DataStructures.Graph import bfs as bfs
+from DataStructures.Graph import dijsktra as dijk
 from DataStructures.List import array_list as al
 from DataStructures.Stack import stack as st
 
 import csv
+import folium
 import time
 import os
 
@@ -313,11 +315,53 @@ def get_shortest_route_between_stops(analyzer, stop1, stop2):
     # TODO: Obtener la ruta mínima entre dos paradas
     # Nota: Tenga en cuenta que el debe guardar en la llave
     #       analyzer['paths'] el resultado del algoritmo de Dijkstra
-    ...
+    grafo = analyzer['connections']
+    if not G.contains_vertex(grafo, stop1) or not G.contains_vertex(grafo, stop2):
+        return None
+    analyzer['paths'] = dijk.dijkstra(grafo, stop1)
+    camino = dijk.path_to(stop2, analyzer['paths'])
+    if camino is None:
+        return None
+    ruta = al.new_list()
+    while not st.is_empty(camino):
+        al.add_last(ruta, st.pop(camino))
+    distancia = dijk.dist_to(stop2, analyzer['paths'])
+    return {'ruta': ruta, 'distancia': distancia}
 
 def show_calculated_shortest_route(analyzer, destination_stop):
     # (Opcional) TODO: Mostrar en un mapa la ruta mínima entre dos paradas usando folium
-    ...
+    if analyzer['paths'] is None:
+        return None
+    camino = dijk.path_to(destination_stop, analyzer['paths'])
+    if camino is None:
+        return None
+    ruta = al.new_list()
+    while not st.is_empty(camino):
+        al.add_last(ruta, st.pop(camino))
+
+    mapa = folium.Map(location=(1.28143, 103.8499), zoom_start=12)
+    puntos = []
+    bus_anterior = None
+    for i in range(al.size(ruta)):
+        vertice = al.get_element(ruta, i)
+        codigo = vertice.split('-')[0]
+        bus = vertice.split('-')[1]
+        parada = m.get(analyzer['stops'], codigo)
+        punto = (float(parada['Latitude']), float(parada['Longitude']))
+        puntos.append(punto)
+        if i == 0:
+            folium.Marker(location=punto, tooltip='Inicio: ' + vertice, icon=folium.Icon("green")).add_to(mapa)
+        elif i == al.size(ruta) - 1:
+            folium.Marker(location=punto, tooltip='Destino: ' + vertice, icon=folium.Icon("red")).add_to(mapa)
+        elif bus != bus_anterior:
+            folium.Marker(location=punto, tooltip='Cambio a bus ' + bus + ' en ' + codigo, icon=folium.Icon("blue")).add_to(mapa)
+        else:
+            folium.CircleMarker(location=punto, radius=3, tooltip=codigo).add_to(mapa)
+        bus_anterior = bus
+    folium.PolyLine(puntos).add_to(mapa)
+    archivo = 'ruta-' + destination_stop + '.html'
+    mapa.save(archivo)
+    return archivo
 
 
 
